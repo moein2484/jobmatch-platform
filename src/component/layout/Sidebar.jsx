@@ -10,25 +10,17 @@ export default function Sidebar() {
             </div>
 
             <div>
-              <p className="text-sm font-bold text-slate-800">
-                محمد معین
-              </p>
+              <p className="text-sm font-bold text-slate-800">محمد معین</p>
 
-              <p className="text-xs text-slate-500">
-                پروفایل شغلی
-              </p>
+              <p className="text-xs text-slate-500">پروفایل شغلی</p>
             </div>
           </div>
 
           <div className="mt-5">
             <div className="mb-2 flex justify-between text-xs">
-              <span className="text-slate-500">
-                تکمیل پروفایل
-              </span>
+              <span className="text-slate-500">تکمیل پروفایل</span>
 
-              <span className="font-bold text-violet-600">
-                80٪
-              </span>
+              <span className="font-bold text-violet-600">80٪</span>
             </div>
 
             <div className="h-2 overflow-hidden rounded-full bg-slate-100">
@@ -42,20 +34,17 @@ export default function Sidebar() {
         </div>
 
         {/* AI */}
-        <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-purple-700 p-5 text-white">
-          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white/15">
-            ✨
+        <div className="overflow-hidden rounded-2xl  from-violet-600 to-purple-700 p-5 text-white bg-white border border-slate-200">
+          <div className="flex gap-10 ">
+            <p>✨</p>
+            <h3 className="font-bold text-violet-700 ">پیشنهاد هوشمند شغل</h3>
           </div>
 
-          <h3 className="font-bold">
-            پیشنهاد هوشمند شغل
-          </h3>
-
-          <p className="mt-2 text-xs leading-6 text-violet-100">
+          <p className="mt-2 text-xs leading-6 text-violet-700">
             بر اساس مهارت‌ها و تجربه شما، بهترین فرصت‌های شغلی را پیدا می‌کنیم.
           </p>
 
-          <button className="mt-4 w-full rounded-xl bg-white py-2.5 text-xs font-bold text-violet-700 transition hover:bg-violet-50">
+          <button className="mt-4 w-full rounded-xl bg-violet-600 py-2.5 text-xs font-bold text-white transition">
             پیدا کردن مشاغل مناسب
           </button>
         </div>

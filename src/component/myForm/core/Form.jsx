@@ -1,0 +1,100 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider } from "./FormProvider";
+
+export default function Form({
+  children,
+  schema,
+  type = "normal",
+  validationMode = "onBlur",
+  onSubmit,
+  defaultValues = {},
+  className,
+  id,
+  ...rest
+}) {
+  // اگر schema ارائه شد، از آن استفاده می‌کنیم
+  // در غیر این صورت، از validation در سطح Field استفاده می‌شود
+  const resolver = schema ? zodResolver(schema) : undefined;
+
+  const formMethods = useForm({
+    resolver,
+    defaultValues,
+    mode: validationMode,
+    reValidateMode: validationMode,
+  });
+
+  const { handleSubmit, formState, control, reset, setValue, getValues, watch } = formMethods;
+
+  const formRef = useRef(null);
+
+  // همگام‌سازی وضعیت اعتبارسنجی با DOM تا دکمه‌های خارجی (متصل با id) هم از خطا مطلع شوند
+  useEffect(() => {
+    const el = formRef.current;
+    if (!el) return;
+    const errorCount = Object.keys(formState.errors).length;
+    el.dataset.formErrors = String(errorCount);
+    el.dataset.formValid = String(errorCount === 0);
+    el.dataset.formSubmitting = String(Boolean(formState.isSubmitting));
+    if (id) {
+      window.dispatchEvent(
+        new CustomEvent("form:statechange", {
+          detail: {
+            formId: id,
+            hasErrors: errorCount > 0,
+            submitting: Boolean(formState.isSubmitting),
+          },
+        }),
+      );
+    }
+  }, [formState, id]);
+
+  const formType = type;
+
+  const scrollToFirstError = (errors) => {
+    const firstKey = Object.keys(errors || {})[0];
+    if (!firstKey) return;
+    const escape = typeof CSS !== "undefined" && CSS.escape ? CSS.escape : (s) => s;
+    const el = document.querySelector(`[data-form-field="${escape(firstKey)}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      const focusable = el.querySelector("input, select, textarea, button");
+      focusable?.focus?.({ preventScroll: true });
+    }
+  };
+
+  const submitHandler = handleSubmit(
+    async (data) => {
+      if (onSubmit) {
+        await onSubmit(data);
+      }
+    },
+    (errors) => {
+      // در حالت عادی، بعد از ارسال به اولین فیلد خطادار اسکرول کن
+      if (formType !== "strict") {
+        scrollToFirstError(errors);
+      }
+    },
+  );
+
+  return (
+    <FormProvider
+      control={control}
+      formState={formState}
+      type={formType}
+      validationMode={validationMode}
+      submitHandler={submitHandler}
+      reset={reset}
+      setValue={setValue}
+      getValues={getValues}
+      watch={watch}
+    >
+      <form id={id} ref={formRef} onSubmit={submitHandler} className={className} {...rest}>
+        {children}
+      </form>
+    </FormProvider>
+  );
+}
