@@ -1,11 +1,30 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
+
+import { Form, FormCheckbox, FormInput, FormSubmit } from "@/component/myForm";
+
+const registerSchema = z.object({
+  first_name: z.string().min(1, "نام  را وارد کنید"),
+  last_name: z.string().min(1, "نام خانوادگی را وارد کنید"),
+
+  email: z
+    .string()
+    .min(1, "ایمیل را وارد کنید")
+    .email("ایمیل وارد شده معتبر نیست"),
+
+  password: z.string().min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد"),
+
+  terms: z.boolean().refine((value) => value === true, {
+    message: "پذیرش قوانین و شرایط الزامی است",
+  }),
+});
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const handleSubmit = (data) => {
+    console.log("Register data:", data);
+  };
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
@@ -41,136 +60,85 @@ export default function RegisterPage() {
             </div>
 
             {/* Form */}
-            <form className="space-y-5">
+            <Form
+              // id="register-form"
+              schema={registerSchema}
+              onSubmit={handleSubmit}
+              defaultValues={{
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                terms: false,
+              }}
+              validationMode="onBlur"
+              className="space-y-5"
+            >
               {/* Name */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  نام و نام خانوادگی
-                </label>
-
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  placeholder="مثلاً محمد معین دهقان"
-                  className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                />
-              </div>
+              <FormInput
+                name="first_name"
+                label="نام "
+                placeholder="مثلاً محمد "
+                required
+                requiredMessage="نام  را وارد کنید"
+              />
+              <FormInput
+                name="last_name"
+                label=" نام خانوادگی"
+                placeholder="مثلاً دهقان"
+                required
+                requiredMessage=" نام خانوادگی را وارد کنید"
+              />
 
               {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  ایمیل
-                </label>
-
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="example@email.com"
-                  dir="ltr"
-                  className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                />
-              </div>
+              <FormInput
+                name="email"
+                label="ایمیل"
+                type="email"
+                placeholder="example@email.com"
+                required
+                requiredMessage="ایمیل را وارد کنید"
+                dir="ltr"
+              />
 
               {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  رمز عبور
-                </label>
-
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="حداقل ۸ کاراکتر"
-                    dir="ltr"
-                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400 transition hover:text-slate-700"
-                  >
-                    {showPassword ? "مخفی" : "نمایش"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  تکرار رمز عبور
-                </label>
-
-                <div className="relative">
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="رمز عبور را دوباره وارد کنید"
-                    dir="ltr"
-                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowConfirmPassword((prev) => !prev)
-                    }
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400 transition hover:text-slate-700"
-                  >
-                    {showConfirmPassword ? "مخفی" : "نمایش"}
-                  </button>
-                </div>
-              </div>
+              <FormInput
+                name="password"
+                label="رمز عبور"
+                type="password"
+                placeholder="حداقل ۸ کاراکتر"
+                required
+                requiredMessage="رمز عبور را وارد کنید"
+                dir="ltr"
+              />
 
               {/* Terms */}
-              <div className="flex items-start gap-3 pt-1">
-                <input
-                  id="terms"
+              <div className="pt-1">
+                <FormCheckbox
                   name="terms"
-                  type="checkbox"
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-indigo-600 accent-indigo-600 focus:ring-indigo-500"
+                  label={
+                    <>
+                      با{" "}
+                      <Link
+                        href="/terms"
+                        className="font-medium text-indigo-600 hover:text-indigo-700"
+                      >
+                        قوانین و شرایط
+                      </Link>{" "}
+                      استفاده از JobMatch موافقم.
+                    </>
+                  }
                 />
-
-                <label
-                  htmlFor="terms"
-                  className="text-xs leading-5 text-slate-500"
-                >
-                  با{" "}
-                  <Link
-                    href="/terms"
-                    className="font-medium text-indigo-600 hover:text-indigo-700"
-                  >
-                    قوانین و شرایط
-                  </Link>{" "}
-                  استفاده از JobMatch موافقم.
-                </label>
               </div>
 
               {/* Submit */}
-              <button
-                type="submit"
+              <FormSubmit
+                // form="register-form"
                 className="h-11 w-full rounded-xl bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]"
               >
                 ساخت حساب
-              </button>
-            </form>
+              </FormSubmit>
+            </Form>
 
             {/* Login */}
             <div className="mt-6 border-t border-slate-100 pt-6 text-center">
