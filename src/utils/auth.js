@@ -20,4 +20,8 @@ const verifyToken = async (token) => {
     return false;
   }
 };
-export { hashPassword, generateToken  , verifyToken };
+const verifyPassword = async (pass, hashedPass) => {
+  const isValid = await compare(pass, hashedPass);
+  return isValid;
+};
+export { hashPassword, generateToken, verifyToken , verifyPassword };
