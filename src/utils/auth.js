@@ -11,4 +11,13 @@ const generateToken = async (data) => {
   });
   return token;
 };
-export { hashPassword, generateToken };
+const verifyToken = async (token) => {
+  try {
+    const isValid = verify(token, process.env.privatekey);
+    return isValid;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+export { hashPassword, generateToken  , verifyToken };
