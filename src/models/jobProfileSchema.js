@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-import { schema as schemaUser } from "@/models/Users";
 const jobProfileSchema = mongoose.Schema(
   {
     user: {
-      type: schemaUser,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
 
@@ -31,11 +31,11 @@ const jobProfileSchema = mongoose.Schema(
       type: String,
     },
 
-    expectedSalary: {
+    salary: {
       type: Number,
     },
 
-    employmentType: {
+    jobType: {
       type: String,
       enum: ["full-time", "part-time", "remote", "internship"],
     },
