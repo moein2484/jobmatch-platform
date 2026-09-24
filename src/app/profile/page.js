@@ -5,29 +5,8 @@ import Link from "next/link";
 import JobProfileForm from "@/component/profile/JobProfileForm";
 import { useMe } from "@/hooks/auth/useMe";
 
-const skills = [
-  "JavaScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Python",
-  "Java",
-  "C#",
-  "UI/UX",
-  "SQL",
-  "MongoDB",
-];
 
 export default function JobInfoPage() {
-  const [selectedSkills, setSelectedSkills] = useState([]);
-
-  const toggleSkill = (skill) => {
-    setSelectedSkills((current) =>
-      current.includes(skill)
-        ? current.filter((item) => item !== skill)
-        : [...current, skill],
-    );
-  };
   const { data: user, isError, isLoading } = useMe();
   const hasJobProfile = !!user?.data?.profile;
 
