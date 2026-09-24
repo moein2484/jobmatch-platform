@@ -17,7 +17,7 @@ export async function GET(req) {
       );
     }
     const tokenPayload = await verifyToken(token);
-    console.log({ tokenPayload });
+
     if (!tokenPayload) {
       return NextResponse.json(
         { message: "شما لاگین نیستید" },
@@ -34,16 +34,10 @@ export async function GET(req) {
     const existJobProfile = await JobProfileModel?.findOne({
       user: existUser?._id,
     });
-    if (!existJobProfile) {
-      return NextResponse.json(
-        { message: "همچین پروفایلی یافت نشد " },
-        { status: 404 },
-      );
-    }
-    return NextResponse.json(
-      { data: { user: existUser, profile: existJobProfile } },
-      { status: 200 },
-    );
+
+    return NextResponse.json({
+      data: { user: existUser, profile: existJobProfile },
+    });
   } catch (err) {
     return NextResponse.json(
       {

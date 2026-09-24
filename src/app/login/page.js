@@ -2,9 +2,52 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { z } from "zod";
+import Swal from "sweetalert2";
+import { Form, FormInput, FormSubmit, FormPassword } from "@/component/myForm";
+import { useLogin } from "@/hooks/auth/useLogin";
+import { useRouter } from "next/navigation";
+import { ThreeDots } from "react-loader-spinner";
+
+const loginSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "ایمیل را وارد کنید")
+    .email("فرمت ایمیل صحیح نیست"),
+
+  password: z
+    .string()
+    .min(1, "رمز عبور را وارد کنید")
+    .min(8, "رمز عبور باید حداقل ۸ کاراکتر باشد"),
+});
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+
+
+  const router = useRouter();
+  const { mutate, isPending } = useLogin();
+  const handleSubmit = async (data) => {
+    mutate(data, {
+      onSuccess: (result) => {
+        Swal.fire({
+          icon: "success",
+          title: "شما با موفقیت وارد شدید",
+          text: result.message,
+          confirmButtonText: "متوجه شدم",
+        });
+        router?.push("/profile");
+      },
+      onError: (err) => {
+        Swal.fire({
+          icon: "error",
+          title: "خطا در تکمیل پروفایل",
+          text: err.message,
+          confirmButtonText: "متوجه شدم",
+        });
+      },
+    });
+  };
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
@@ -40,84 +83,57 @@ export default function LoginPage() {
             </div>
 
             {/* Form */}
-            <form className="space-y-5">
-              {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="mb-2 block text-sm font-medium text-slate-700"
-                >
-                  ایمیل
-                </label>
-
-                <input
-                  id="email"
+            <Form
+              schema={loginSchema}
+              defaultValues={{
+                email: "",
+                password: "",
+                remember: false,
+              }}
+              onSubmit={handleSubmit}
+              validationMode="onSubmit"
+            >
+              <div className="space-y-5">
+                {/* Email */}
+                <FormInput
                   name="email"
+                  label="ایمیل"
                   type="email"
                   placeholder="example@email.com"
                   dir="ltr"
-                  className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-slate-700"
-                  >
-                    رمز عبور
-                  </label>
-
-                  <Link
-                    href="/forgot-password"
-                    className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
-                  >
-                    رمز عبور را فراموش کرده‌ام
-                  </Link>
-                </div>
-
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="رمز عبور خود را وارد کنید"
-                    dir="ltr"
-                    className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-slate-400 transition hover:text-slate-700"
-                  >
-                    {showPassword ? "مخفی" : "نمایش"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember */}
-              <label className="flex cursor-pointer items-center gap-3">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-slate-300 accent-indigo-600 focus:ring-indigo-500"
                 />
 
-                <span className="text-sm text-slate-500">
-                  مرا به خاطر بسپار
-                </span>
-              </label>
+                {/* Password */}
+                <div>
+                  <div className="relative">
+                    <FormPassword
+                      name="password"
+                      label="رمز عبور"
+                      placeholder="رمز عبور را وارد کنید"
+                      required
+                      minLength={6}
+                      minLengthMessage="حداقل ۶ کاراکتر"
+                    />
+                  </div>
+                </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                className="h-11 w-full rounded-xl bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]"
-              >
-                ورود به حساب
-              </button>
-            </form>
+                <FormSubmit className="h-11 w-full rounded-xl bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]">
+                  {isPending ? (
+                    <div
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ThreeDots height={20} width={40} color="#fff" />
+                    </div>
+                  ) : (
+                    " ورود به حساب"
+                  )}
+                </FormSubmit>
+              </div>
+            </Form>
 
             {/* Register */}
             <div className="mt-6 border-t border-slate-100 pt-6 text-center">

@@ -1,5 +1,5 @@
 export async function loginUser(data) {
-  const response = await fetch("/api/auth/login", {
+  const response = await fetch("/api/auth/signin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,6 +29,20 @@ export async function registerUser(data) {
 
   if (!response.ok) {
     throw new Error(result.message || "خطا در ثبت نام");
+  }
+
+  return result;
+}
+export async function getMe() {
+  const response = await fetch("/api/auth/me", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "خطا در دریافت اطلاعات کاربر");
   }
 
   return result;

@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import { z } from "zod";
 import Swal from "sweetalert2";
 import {
@@ -12,6 +12,9 @@ import {
 } from "@/component/myForm";
 import { useComplateProfile } from "@/hooks/profile/complateProfile";
 import { ThreeDots } from "react-loader-spinner";
+import { useUpdateProfile } from "@/hooks/profile/updateProfile";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 const skills = [
   "JavaScript",
   "React",
@@ -24,7 +27,25 @@ const skills = [
   "SQL",
   "MongoDB",
 ];
+function SetProfileValues({ profile }) {
+  const { reset } = useFormContext();
 
+  useEffect(() => {
+    if (!profile) return;
+
+    reset({
+      jobTitle: profile.jobTitle || "",
+      experience: profile.experience || "",
+      education: profile.education || "",
+      skills: profile.skills || [],
+      jobType: profile.jobType || "",
+      location: profile.location || "",
+      salary: String(profile.salary) ?? "",
+    });
+  }, [profile, reset]);
+
+  return null;
+}
 const experienceOptions = [
   { value: "0", label: "بدون سابقه" },
   { value: "1", label: "کمتر از ۱ سال" },
@@ -119,29 +140,61 @@ function SkillsField() {
   );
 }
 
-export default function JobProfileForm() {
+export default function JobProfileForm({ hasJobProfile, user }) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const { mutate, isPending } = useComplateProfile();
+  const { mutate: mutateUpdate, isPending: isPendingUpdate } =
+    useUpdateProfile();
   const handleSubmit = (data) => {
-    mutate(data, {
-      onSuccess: (result) => {
-        Swal.fire({
-          icon: "success",
-          title: "تکمیل پروفایل با موفقیت همراه بود",
-          text: result.message,
-          confirmButtonText: "متوجه شدم",
+    hasJobProfile
+      ? mutateUpdate(
+          { data, id: user?.data?.user?._id },
+          {
+            onSuccess: (result) => {
+              Swal.fire({
+                icon: "success",
+                title: "تکمیل پروفایل با موفقیت همراه بود",
+                text: result.message,
+                confirmButtonText: "متوجه شدم",
+              });
+              router?.push("/");
+              queryClient.invalidateQueries({
+                queryKey: ["me"],
+              });
+            },
+            onError: (error) => {
+              Swal.fire({
+                icon: "error",
+                title: "خطا در ثبت نام",
+                text: error.message,
+                confirmButtonText: "باشه",
+              });
+            },
+          },
+        )
+      : mutate(data, {
+          onSuccess: (result) => {
+            Swal.fire({
+              icon: "success",
+              title: "تکمیل پروفایل با موفقیت همراه بود",
+              text: result.message,
+              confirmButtonText: "متوجه شدم",
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["me"],
+            });
+            router?.push("/");
+          },
+          onError: (error) => {
+            Swal.fire({
+              icon: "error",
+              title: "خطا در ثبت نام",
+              text: error.message,
+              confirmButtonText: "باشه",
+            });
+          },
         });
-        router?.push("/profile");
-      },
-      onError: (error) => {
-        
-        Swal.fire({
-          icon: "error",
-          title: "خطا در ثبت نام",
-          text: error.message,
-          confirmButtonText: "باشه",
-        });
-      },
-    });
   };
 
   return (
@@ -161,6 +214,7 @@ export default function JobProfileForm() {
       }}
       onSubmit={handleSubmit}
     >
+      <SetProfileValues profile={user?.data?.profile} />
       <div className="space-y-8">
         {/* اطلاعات حرفه‌ای */}
         <section>
@@ -248,21 +302,39 @@ export default function JobProfileForm() {
         </section>
 
         <div className="flex justify-end border-t border-slate-100 pt-6">
-          <FormSubmit form="job-profile-form">
-            {isPending ? (
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <ThreeDots height={20} width={40} color="#fff" />
-              </div>
-            ) : (
-              "ذخیره و ادامه"
-            )}{" "}
-          </FormSubmit>
+          {hasJobProfile ? (
+            <FormSubmit form="job-profile-form">
+              {isPendingUpdate ? (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThreeDots height={20} width={40} color="#fff" />
+                </div>
+              ) : (
+                "ذخیره و ادامه"
+              )}
+            </FormSubmit>
+          ) : (
+            <FormSubmit form="job-profile-form">
+              {isPending ? (
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThreeDots height={20} width={40} color="#fff" />
+                </div>
+              ) : (
+                "ذخیره و ادامه"
+              )}
+            </FormSubmit>
+          )}
         </div>
       </div>
     </Form>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import JobProfileForm from "@/component/profile/JobProfileForm";
+import { useMe } from "@/hooks/auth/useMe";
 
 const skills = [
   "JavaScript",
@@ -27,6 +28,8 @@ export default function JobInfoPage() {
         : [...current, skill],
     );
   };
+  const { data: user, isError, isLoading } = useMe();
+  const hasJobProfile = !!user?.data?.profile;
 
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
@@ -39,7 +42,14 @@ export default function JobInfoPage() {
           >
             Job<span className="text-indigo-600">Match</span>
           </Link>
-
+          {!hasJobProfile && (
+            <div className="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">
+              <span className="text-lg">⚠️</span>
+              <p>
+                شما اطلاعات شغلی ندارید. زودتر نسبت به فراهم کردن آن اقدام کنید.
+              </p>
+            </div>
+          )}
           <span className="text-xs font-medium text-slate-400">
             تکمیل پروفایل
           </span>
@@ -78,7 +88,7 @@ export default function JobInfoPage() {
             </p>
           </div>
 
-          <JobProfileForm/>
+          <JobProfileForm hasJobProfile={hasJobProfile} user={user} />
         </div>
 
         {/* Footer */}
