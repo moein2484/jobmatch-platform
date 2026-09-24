@@ -33,6 +33,19 @@ export async function registerUser(data) {
 
   return result;
 }
+export async function logOut() {
+  const response = await fetch("/api/auth/logout", {
+    method: "POST",
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "خطا در خروج از حساب کاربری");
+  }
+
+  return result;
+}
 export async function getMe() {
   const response = await fetch("/api/auth/me", {
     method: "GET",
