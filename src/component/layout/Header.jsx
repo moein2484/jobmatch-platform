@@ -8,21 +8,16 @@ export default function Header() {
             J
           </div>
 
-          <span className="text-lg font-bold text-slate-900">
-            JobMatch
-          </span>
+          <span className="text-lg font-bold text-slate-900">JobMatch</span>
         </div>
 
         {/* User */}
-        <div className="flex items-center gap-3">
+        
+        <div className="flex items-center gap-3 flex-row-reverse">
           <div className="hidden text-right sm:block">
-            <p className="text-sm font-semibold text-slate-800">
-              محمد معین
-            </p>
+            <p className="text-sm font-semibold text-slate-800">محمد معین</p>
 
-            <p className="text-xs text-slate-500">
-              توسعه‌دهنده Frontend
-            </p>
+            <p className="text-xs text-slate-500">توسعه‌دهنده Frontend</p>
           </div>
 
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-violet-100 text-sm font-bold text-violet-700">

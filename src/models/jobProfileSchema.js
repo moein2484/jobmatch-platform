@@ -19,7 +19,7 @@ const jobProfileSchema = mongoose.Schema(
     ],
 
     experience: {
-      type: Number,
+      type: String,
       default: 0,
     },
 

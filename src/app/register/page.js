@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { z } from "zod";
-
+import { useRegister } from "@/hooks/auth/useRegister";
 import { Form, FormCheckbox, FormInput, FormSubmit } from "@/component/myForm";
-
+import { ThreeDots } from "react-loader-spinner";
+import Swal from "sweetalert2";
+import { div } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 const registerSchema = z.object({
   first_name: z.string().min(1, "نام  را وارد کنید"),
   last_name: z.string().min(1, "نام خانوادگی را وارد کنید"),
@@ -22,8 +25,29 @@ const registerSchema = z.object({
 });
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const { mutate, isPending, isError, error, isSuccess } = useRegister();
   const handleSubmit = (data) => {
-    console.log("Register data:", data);
+    mutate(data, {
+      onSuccess: (result) => {
+        Swal.fire({
+          icon: "success",
+          title: "ثبت نام موفق بود",
+          text: result.message,
+          confirmButtonText: "متوجه شدم",
+        });
+        router?.push("/profile");
+      },
+
+      onError: (error) => {
+        Swal.fire({
+          icon: "error",
+          title: "خطا در ثبت نام",
+          text: error.message,
+          confirmButtonText: "باشه",
+        });
+      },
+    });
   };
 
   return (
@@ -65,10 +89,10 @@ export default function RegisterPage() {
               schema={registerSchema}
               onSubmit={handleSubmit}
               defaultValues={{
-                name: "",
+                first_name: "",
+                last_name: "",
                 email: "",
                 password: "",
-                confirmPassword: "",
                 terms: false,
               }}
               validationMode="onBlur"
@@ -132,11 +156,20 @@ export default function RegisterPage() {
               </div>
 
               {/* Submit */}
-              <FormSubmit
-                // form="register-form"
-                className="h-11 w-full rounded-xl bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]"
-              >
-                ساخت حساب
+              <FormSubmit className="h-11 w-full rounded-xl bg-indigo-600 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-[0.99]">
+                {isPending ? (
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ThreeDots height={20} width={40} color="#fff" />
+                  </div>
+                ) : (
+                  "ساخت حساب"
+                )}
               </FormSubmit>
             </Form>
 

@@ -1,15 +1,17 @@
 "use client";
 
 import { z } from "zod";
-
+import Swal from "sweetalert2";
 import {
   Form,
   FormInput,
   FormSelect,
   FormSubmit,
   useFormContext,
+  FormCurrency,
 } from "@/component/myForm";
-
+import { useComplateProfile } from "@/hooks/profile/complateProfile";
+import { ThreeDots } from "react-loader-spinner";
 const skills = [
   "JavaScript",
   "React",
@@ -75,7 +77,6 @@ function SkillsField() {
 
     setValue("skills", updatedSkills);
   };
-
   return (
     <div>
       <div className="mb-3">
@@ -119,8 +120,28 @@ function SkillsField() {
 }
 
 export default function JobProfileForm() {
+  const { mutate, isPending } = useComplateProfile();
   const handleSubmit = (data) => {
-    console.log("FORM DATA:", data);
+    mutate(data, {
+      onSuccess: (result) => {
+        Swal.fire({
+          icon: "success",
+          title: "تکمیل پروفایل با موفقیت همراه بود",
+          text: result.message,
+          confirmButtonText: "متوجه شدم",
+        });
+        router?.push("/profile");
+      },
+      onError: (error) => {
+        
+        Swal.fire({
+          icon: "error",
+          title: "خطا در ثبت نام",
+          text: error.message,
+          confirmButtonText: "باشه",
+        });
+      },
+    });
   };
 
   return (
@@ -217,18 +238,31 @@ export default function JobProfileForm() {
               required
             />
 
-            <FormInput
+            <FormCurrency
               name="salary"
               label="حداقل حقوق مورد انتظار"
               placeholder="مثلاً 30000000"
-              type="number"
-              required
+              asString
             />
           </div>
         </section>
 
         <div className="flex justify-end border-t border-slate-100 pt-6">
-          <FormSubmit form="job-profile-form">ذخیره و ادامه</FormSubmit>
+          <FormSubmit form="job-profile-form">
+            {isPending ? (
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <ThreeDots height={20} width={40} color="#fff" />
+              </div>
+            ) : (
+              "ذخیره و ادامه"
+            )}{" "}
+          </FormSubmit>
         </div>
       </div>
     </Form>
