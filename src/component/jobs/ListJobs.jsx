@@ -6,8 +6,8 @@ import { useGlobalContext } from "../context/GlobalContext";
 import JobCardSkeleton from "./JobCardSkeleton";
 
 export default function ListJobs() {
-  const { jobs, setJobs, search } = useGlobalContext();
-  const { data, isLoading } = useJobs(search);
+  const { jobs, setJobs, filters } = useGlobalContext();
+  const { data, isLoading } = useJobs(filters);
   useEffect(() => {
     if (data?.jobs) {
       setJobs(data?.jobs);

@@ -6,14 +6,20 @@ const GlobalContext = createContext();
 
 export function GlobalProvider({ children }) {
   const [jobs, setJobs] = useState([]);
-  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({
+    location: "",
+    jobType: "",
+    experience: "",
+    search: "",
+  });
+
   return (
     <GlobalContext.Provider
       value={{
         jobs,
         setJobs,
-        search,
-        setSearch,
+        filters,
+        setFilters,
       }}
     >
       {children}

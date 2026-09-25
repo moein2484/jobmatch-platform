@@ -7,13 +7,29 @@ export async function GET(req) {
     await connectToDb();
     const searchParams = req.nextUrl.searchParams;
     const q = searchParams.get("q");
-    console.log({ q });
-    let listJobs;
-    if (q) {
-      listJobs = await Job.find({ title: { $regex: q, $options: "i" } });
-    } else {
-      listJobs = await Job.find();
+    const location = searchParams.get("location");
+    const jobType = searchParams.get("jobType");
+    const experience = searchParams.get("experience");
+    const filter = {};
+    if (q?.trim()) {
+      filter.title = {
+        $regex: q.trim(),
+        $options: "i",
+      };
     }
+    if (location?.trim()) {
+      filter.location = {
+        $regex: location.trim(),
+        $options: "i",
+      };
+    }
+    if (jobType?.trim()) {
+      filter.jobType = jobType;
+    }
+    if (experience !== null && experience !== "") {
+      filter.experience = experience;
+    }
+    const listJobs = await Job.find(filter);
 
     if (!listJobs || listJobs.length === 0) {
       return NextResponse.json(

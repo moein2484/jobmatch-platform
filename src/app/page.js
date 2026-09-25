@@ -36,9 +36,6 @@ export default async function Home() {
             <div className="mb-4 lg:hidden">
               <JobFilters />
             </div>
-
-        
-
             <ListJobs />
           </section>
 

@@ -3,13 +3,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { getJobs } from "@/services/jobs";
 
-export function useJobs(search) {
+export function useJobs(filters) {
   return useQuery({
-    queryKey: ["Jobs", search],
-    queryFn: ({ queryKey }) => {
-      const search = queryKey[1];
-
-      return getJobs({ search });
-    },
+    queryKey: ["Jobs", filters],
+    queryFn: () => getJobs(filters),
   });
 }
