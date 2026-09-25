@@ -30,7 +30,7 @@ export async function GET(req) {
       }
     );
   } catch (err) {
-    console.error("Get jobs error:", err);
+  
 
     return NextResponse.json(
       {

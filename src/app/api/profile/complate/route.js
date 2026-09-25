@@ -154,7 +154,7 @@ export async function POST(req) {
       );
     }
   } catch (err) {
-    console.error(err);
+ 
     return NextResponse.json(
       {
         message: "خطا در پردازش درخواست",

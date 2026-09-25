@@ -16,7 +16,6 @@ const verifyToken = async (token) => {
     const isValid = verify(token, process.env.privatekey);
     return isValid;
   } catch (err) {
-    console.log(err);
     return false;
   }
 };
