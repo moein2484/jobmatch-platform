@@ -3,7 +3,7 @@ import Sidebar from "@/component/layout/Sidebar";
 import SearchBar from "@/component/jobs/SearchBar";
 import JobFilters from "@/component/jobs/JobFilters";
 import JobCard from "@/component/jobs/JobCard";
-import { jobs } from "@/data/jobs";
+import jobs from "@/data/jobs";
 import JobRecommend from "@/component/jobs/JobRecommend";
 import { cookies } from "next/headers";
 export default async function Home() {

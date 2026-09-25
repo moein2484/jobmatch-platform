@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
+
 const connectToDb = async () => {
   try {
-    if (mongoose?.connections[0]?.readyState) {
-      return false;
+    if (mongoose.connection.readyState === 1) {
+      return;
     }
+
     await mongoose.connect("mongodb://127.0.0.1:27017/job-math");
+
     console.log("Connected to database!");
   } catch (err) {
-    console("error=>", err);
+    console.error("Database connection error:", err);
+    throw err;
   }
 };
-mongoose
-  .connect("mongodb://127.0.0.1:27017/job-math")
-  .then(() => console.log("Connected to database!"))
-  .catch((error) => console("error=>", error));
+
 export default connectToDb;
