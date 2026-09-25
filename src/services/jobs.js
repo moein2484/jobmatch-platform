@@ -1,5 +1,11 @@
-export async function getJobs() {
-  const response = await fetch("/api/jobs", {
+export async function getJobs({ search }) {
+  let urlEndPoint;
+  if (search) {
+    urlEndPoint = `/api/jobs?q=${search}`;
+  } else {
+    urlEndPoint = `/api/jobs`;
+  }
+  const response = await fetch(urlEndPoint, {
     method: "GET",
   });
 

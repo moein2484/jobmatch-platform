@@ -2,8 +2,8 @@ import Header from "@/component/layout/Header";
 import Sidebar from "@/component/layout/Sidebar";
 import SearchBar from "@/component/jobs/SearchBar";
 import JobFilters from "@/component/jobs/JobFilters";
-import ListJobs from "@/component/jobs/ListJobs"
-import jobs from "@/data/jobs";
+import ListJobs from "@/component/jobs/ListJobs";
+
 import JobRecommend from "@/component/jobs/JobRecommend";
 import { cookies } from "next/headers";
 export default async function Home() {
@@ -37,21 +37,7 @@ export default async function Home() {
               <JobFilters />
             </div>
 
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h2 className="font-bold text-slate-900">همه مشاغل</h2>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  {jobs.length} فرصت شغلی پیدا شد
-                </p>
-              </div>
-
-              <select className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600 outline-none">
-                <option>جدیدترین</option>
-                <option>بیشترین تطابق</option>
-                <option>بیشترین حقوق</option>
-              </select>
-            </div>
+        
 
             <ListJobs />
           </section>

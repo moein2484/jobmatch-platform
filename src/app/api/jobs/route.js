@@ -5,8 +5,15 @@ import Job from "@/models/jobsSchema";
 export async function GET(req) {
   try {
     await connectToDb();
-
-    const listJobs = await Job.find();
+    const searchParams = req.nextUrl.searchParams;
+    const q = searchParams.get("q");
+    console.log({ q });
+    let listJobs;
+    if (q) {
+      listJobs = await Job.find({ title: { $regex: q, $options: "i" } });
+    } else {
+      listJobs = await Job.find();
+    }
 
     if (!listJobs || listJobs.length === 0) {
       return NextResponse.json(
@@ -16,7 +23,7 @@ export async function GET(req) {
         },
         {
           status: 200,
-        }
+        },
       );
     }
 
@@ -27,11 +34,9 @@ export async function GET(req) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (err) {
-  
-
     return NextResponse.json(
       {
         message: "خطا در دریافت لیست مشاغل",
@@ -39,7 +44,7 @@ export async function GET(req) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
