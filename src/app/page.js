@@ -2,7 +2,7 @@ import Header from "@/component/layout/Header";
 import Sidebar from "@/component/layout/Sidebar";
 import SearchBar from "@/component/jobs/SearchBar";
 import JobFilters from "@/component/jobs/JobFilters";
-import JobCard from "@/component/jobs/JobCard";
+import ListJobs from "@/component/jobs/ListJobs"
 import jobs from "@/data/jobs";
 import JobRecommend from "@/component/jobs/JobRecommend";
 import { cookies } from "next/headers";
@@ -53,11 +53,7 @@ export default async function Home() {
               </select>
             </div>
 
-            <div className="space-y-4">
-              {jobs.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
+            <ListJobs />
           </section>
 
           <div className="hidden w-60 shrink-0 lg:block">
