@@ -13,6 +13,7 @@ export default function ListJobs() {
       setJobs(data?.jobs);
     }
   }, [jobs, data]);
+  console.log({data})
   return (
     <>
       <div className="mb-4 flex items-center justify-between">

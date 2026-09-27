@@ -42,6 +42,11 @@ const jobSchema = mongoose.Schema(
       ],
       required: true,
     },
+
+    // AI embedding
+    embedding: {
+      type: [Number],
+    },
   },
   {
     timestamps: true,

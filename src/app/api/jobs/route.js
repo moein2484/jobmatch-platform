@@ -30,7 +30,7 @@ export async function GET(req) {
       filter.experience = experience;
     }
     const listJobs = await Job.find(filter);
-
+    console.log("Embedding dimensions:", listJobs?.embedding);
     if (!listJobs || listJobs.length === 0) {
       return NextResponse.json(
         {
