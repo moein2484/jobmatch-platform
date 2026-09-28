@@ -52,10 +52,11 @@ export default function Sidebar() {
           <p className="mt-2 text-xs leading-6 text-violet-700">
             بر اساس مهارت‌ها و تجربه شما، بهترین فرصت‌های شغلی را پیدا می‌کنیم.
           </p>
-
-          <button className="mt-4 w-full rounded-xl bg-violet-600 py-2.5 text-xs font-bold text-white transition">
-            پیدا کردن مشاغل مناسب
-          </button>
+          <Link href="/ai-matching">
+            <button className="mt-4 w-full rounded-xl bg-violet-600 py-2.5 text-xs font-bold text-white transition">
+              پیدا کردن مشاغل مناسب
+            </button>
+          </Link>
         </div>
       </div>
     </aside>

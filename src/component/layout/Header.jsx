@@ -29,6 +29,9 @@ export default function Header({ isAuthenticated }) {
 
         router.push("/login");
       },
+      onError: (err) => {
+        console.log({ err });
+      },
     });
   };
   return (
